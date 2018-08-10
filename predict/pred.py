@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/')
+sys.path.append('/home/****/.../BD_SEResNeXt101_32x4d/') # 不加会导致无法导入上层目录其他分支下的模型
 import os
 import numpy as np
 import pandas as pd
@@ -26,11 +26,11 @@ test_transforms = transforms.Compose([
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 mode = "test"  # train
 
-rawdata_root = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/dataset'
-train_pd = pd.read_csv("/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/dataset/train.txt", sep=" ",
+rawdata_root = './BD_SEResNeXt101_32x4d/dataset'
+train_pd = pd.read_csv("./BD_SEResNeXt101_32x4d/dataset/train.txt", sep=" ",
                      header=None, names=['ImageName', 'label'])
 
-true_test_pb = pd.read_csv("/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/dataset/test.txt", sep=" ",
+true_test_pb = pd.read_csv("./BD_SEResNeXt101_32x4d/dataset/test.txt", sep=" ",
                            header=None, names=['ImageName'])
 ''' addFakeLabel '''
 true_test_pb['label'] = 1
@@ -47,12 +47,12 @@ data_loader['test'] = torchdata.DataLoader(data_set['test'], batch_size=1, num_w
                                            shuffle=False, pin_memory=True, collate_fn=collate_fn)
 
 model_name = 'BD_mutilModelPred-6-1-out'  # 用作存预测结果的文件名
-resume_1 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-24-240-[0.9927].pth'
-resume_2 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-26-60-[0.9927].pth'
-resume_3 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-56-160-[0.9927].pth'
-resume_4 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-58-180-[0.9951].pth'
-resume_5 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-116-160-[0.9951].pth'
-resume_6 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-54-140-[0.9878].pth'
+resume_1 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-24-240-[0.9927].pth'
+resume_2 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-26-60-[0.9927].pth'
+resume_3 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-56-160-[0.9927].pth'
+resume_4 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-58-180-[0.9951].pth'
+resume_5 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-116-160-[0.9951].pth'
+resume_6 = './BD_SEResNeXt101_32x4d/models/seresnet101_32x4d_3inner_model/weights-54-140-[0.9878].pth'
 #resume_7 = '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/models/seresnet101_32x4d_3inner_model/weights-122-220-[0.9853].pth'
 
 model_1 = multiscale_resnet(num_class=100)
@@ -99,8 +99,8 @@ model_6.eval()
 
 criterion = CrossEntropyLoss()
 
-if not os.path.exists('/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv'):
-    os.makedirs('/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv')
+if not os.path.exists('./BD_SEResNeXt101_32x4d/predict/Baidu/csv'):
+    os.makedirs('./BD_SEResNeXt101_32x4d/predict/Baidu/csv')
 
 test_size = ceil(len(data_set['test']) / data_loader['test'].batch_size)  # 得到整个测试集被分成的batch数
 test_preds = np.zeros((len(data_set['test'])), dtype=np.float32)
@@ -158,15 +158,15 @@ test_pred = test_pd[['ImageName']].copy()
 test_pred['pred_label'] = list(test_preds)
 test_pred['pred_label'] = test_pred['pred_label'].apply(lambda x: int(x) + 1)
 if mode == 'test':
-    test_pred[['ImageName', "pred_label"]].to_csv('/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode), sep=" ",
+    test_pred[['ImageName', "pred_label"]].to_csv('./BD_SEResNeXt101_32x4d/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode), sep=" ",
                                                   header=None, index=False)
-    print('Save result to %s' % '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode))
+    print('Save result to %s' % './BD_SEResNeXt101_32x4d/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode))
 elif mode == 'train':
     test_pred['true_label'] = list(true_label)
     test_pred['true_label'] = test_pred['true_label'].apply(lambda x: int(x) + 1)
-    test_pred[['ImageName', "pred_label", "true_label"]].to_csv('/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode),
+    test_pred[['ImageName', "pred_label", "true_label"]].to_csv('./BD_SEResNeXt101_32x4d/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode),
                                                                 sep=" ",
                                                                 header=None, index=False)
-    print('Save result to %s' % '/home/AndrewHR/competition/BD_SJZP/BD_mutilModelPred/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode))
+    print('Save result to %s' % './BD_SEResNeXt101_32x4d/predict/Baidu/csv/{0}_{1}.csv'.format(model_name, mode))
     print('Have error: %d' % test_pred[test_pred['pred_label']!=test_pred['true_label']].shape[0])
 print(test_pred.info())

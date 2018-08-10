@@ -16,8 +16,8 @@ from models.multiscale_resnet import multiscale_resnet
 from utils.train_util import train, trainlog
 from PIL import Image 
 
-rawdata_root = '/home/AndrewHR/competition/BD_SJZP/BD_SEResNeXt101_32x4d/dataset'  # 指定导入图片所在根路径
-all_pd = pd.read_csv("/home/AndrewHR/competition/BD_SJZP/BD_SEResNeXt101_32x4d/dataset/train.txt", sep=" ",
+rawdata_root = './BD_SEResNeXt101_32x4d/dataset'  # 指定导入图片所在根路径
+all_pd = pd.read_csv("./BD_SEResNeXt101_32x4d/dataset/train.txt", sep=" ",
                      header=None, names=['ImageName', 'label'])
 train_pd, val_pd = train_test_split(all_pd, test_size=0.15, stratify=all_pd['label'])
 print(val_pd.shape)
@@ -40,7 +40,7 @@ data_transforms = {
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-save_dir = '/home/AndrewHR/competition/BD_SJZP/BD_SEResNeXt101_32x4d/models/SEResNeXt101_32x4d'
+save_dir = './BD_SEResNeXt101_32x4d/models/SEResNeXt101_32x4d'
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 logfile = '%s/trainlog.log' % save_dir
